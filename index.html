@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ContentFlow AI</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f6f2;--card:#fff;--soft:#efeee9;--ink:#1d1f24;--mute:#6b6f78;--line:#e3e1da;--ac:#2b4fff;--acs:#e8ecff;--sh:0 8px 30px rgba(20,25,50,.07);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#14161b;--card:#1c1f26;--soft:#252932;--ink:#eceef3;--mute:#9aa0ad;--line:#2f333d;--acs:#232a52;--ac:#6f88ff;--sh:none}}
+:root[data-theme=dark]{--bg:#14161b;--card:#1c1f26;--soft:#252932;--ink:#eceef3;--mute:#9aa0ad;--line:#2f333d;--acs:#232a52;--ac:#6f88ff;--sh:none}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 'Instrument Sans',system-ui,sans-serif}
+h1,h2,h3,.logo{font-family:'Bricolage Grotesque',system-ui,sans-serif;letter-spacing:-.025em;margin:0}
+button{font:inherit;color:inherit;cursor:pointer}a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.hide{display:none!important}
+.logo{font-weight:800;font-size:19px;display:flex;align-items:center;gap:8px}
+.mark{width:26px;height:26px;border-radius:8px;background:var(--ac);position:relative;overflow:hidden}
+.mark:after{content:"";position:absolute;left:-4px;right:-4px;top:11px;height:4px;background:#fff;border-radius:4px;transform:rotate(-24deg)}
+.btn{border:1px solid var(--line);background:var(--card);padding:9px 16px;border-radius:10px;font-weight:600}
+.btn.p{background:var(--ac);border-color:var(--ac);color:#fff}
+.btn.p:hover{filter:brightness(1.1)}
+/* landing */
+nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:28px;padding:14px 5vw;transition:.25s}
+nav.s{backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 78%,transparent);border-bottom:1px solid var(--line)}
+nav .links{display:flex;gap:22px;color:var(--mute);font-weight:500;margin-left:12px}nav .sp{flex:1}
+.hero{display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center;padding:70px 5vw 90px;max-width:1280px;margin:auto}
+.hero h1{font-size:clamp(40px,6vw,76px);line-height:1;font-weight:800}
+.hero p{color:var(--mute);font-size:18px;max-width:46ch;margin:22px 0 30px}
+.tag{color:var(--mute);margin-top:22px;font-size:14px}
+.stage{position:relative;padding:30px}
+.win{background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:var(--sh);padding:22px;animation:fl 7s ease-in-out infinite}
+.bub{background:var(--soft);border-radius:12px;padding:12px 14px;font-weight:500}
+.out{margin-top:14px;min-height:150px;white-space:pre-wrap;font-size:14px}
+.gen{color:var(--ac);font-weight:600;display:flex;gap:8px;align-items:center}
+.dots i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ac);margin-right:3px;animation:b 1s infinite}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+.chip-f{position:absolute;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-weight:600;font-size:13px;box-shadow:var(--sh);animation:fl 6s ease-in-out infinite}
+.chip-f.a{top:0;right:0;animation-delay:-2s}.chip-f.b{bottom:0;left:0;animation-delay:-4s}
+@keyframes fl{50%{transform:translateY(-9px)}}@keyframes b{50%{transform:translateY(-5px);opacity:.4}}
+section.sec{max-width:1180px;margin:auto;padding:60px 5vw}
+section.sec h2{font-size:clamp(28px,4vw,44px);margin-bottom:30px;max-width:18ch}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;transition:.25s}
+.card:hover{transform:translateY(-4px);border-color:var(--ac);box-shadow:0 0 0 4px var(--acs)}
+.ic{width:42px;height:42px;border-radius:12px;background:var(--acs);display:grid;place-items:center;font-size:20px;margin-bottom:14px;transition:.3s}
+.card:hover .ic{transform:rotate(-8deg) scale(1.12)}
+.card h3{font-size:18px;margin-bottom:6px}.card p{margin:0;color:var(--mute)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:s}
+.steps .card:before{counter-increment:s;content:counter(s);font-family:'Bricolage Grotesque';font-weight:800;color:var(--ac);font-size:28px;display:block}
+footer{padding:40px 5vw;color:var(--mute);border-top:1px solid var(--line);text-align:center}
+/* auth */
+.auth{min-height:100vh;display:grid;place-items:center;padding:24px}
+.box{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:32px;box-shadow:var(--sh)}
+.box h2{font-size:28px;margin:18px 0 6px}.box p.s{color:var(--mute);margin:0 0 20px}
+label{display:block;font-weight:600;font-size:13px;margin:14px 0 6px}
+input,textarea,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{resize:vertical;min-height:110px}
+.err{color:#d6382f;font-size:13px;min-height:18px;margin-top:6px}
+.lnk{color:var(--ac);background:none;border:0;padding:0;font-weight:600}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+.pill{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px;font-weight:600;text-align:left}
+.pill.on{border-color:var(--ac);background:var(--acs);color:var(--ac)}
+/* app */
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+aside{border-right:1px solid var(--line);background:var(--card);padding:18px 14px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh}
+aside h6{margin:18px 10px 6px;font-size:12px;color:var(--mute);font-weight:600}
+.ni{display:flex;gap:10px;align-items:center;padding:9px 12px;border-radius:10px;border:0;background:none;width:100%;text-align:left;font-weight:500;color:var(--mute)}
+.ni:hover{background:var(--soft)}.ni.on{background:var(--acs);color:var(--ac);font-weight:600}
+.prof{margin-top:auto;display:flex;gap:10px;align-items:center;padding:10px;border-top:1px solid var(--line)}
+.av{width:34px;height:34px;border-radius:50%;background:var(--ac);color:#fff;display:grid;place-items:center;font-weight:700;flex:none}
+main{padding:0 clamp(16px,3vw,40px) 60px;min-width:0}
+.top{display:flex;gap:12px;align-items:center;padding:20px 0}.top .t{flex:1}.top h1{font-size:clamp(22px,3vw,32px)}.top p{margin:2px 0 0;color:var(--mute)}
+.top input{max-width:220px}.ib{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--card)}
+.qc{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:12px 0 30px}
+.qc button.card{text-align:left;font:inherit}.qc .e{font-size:26px}.qc b{display:block;font-size:17px;margin:6px 0 2px;font-family:'Bricolage Grotesque'}.qc span{color:var(--mute);font-size:14px}
+.gwrap{display:grid;grid-template-columns:minmax(0,420px) 1fr;gap:20px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chips button{border:1px solid var(--line);background:var(--bg);border-radius:99px;padding:6px 13px}
+.chips button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}.seg button{flex:1;border:0;background:var(--bg);padding:8px}.seg button.on{background:var(--ac);color:#fff}
+.go{width:100%;margin-top:20px;padding:14px;border:0;border-radius:12px;font-weight:700;font-size:16px;color:#fff;background:linear-gradient(110deg,var(--ac),#7a4dff,var(--ac));background-size:200% 100%;transition:.3s}
+.go:hover{background-position:100% 0}.go:disabled{opacity:.7;cursor:wait}
+.go.busy{animation:sh 1s linear infinite}@keyframes sh{to{background-position:-200% 0}}
+details summary{cursor:pointer;font-weight:600;margin-top:16px}
+.res{min-height:420px;display:flex;flex-direction:column}
+.res .body{flex:1;white-space:pre-wrap;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--bg);min-height:280px;outline:none}
+.empty{color:var(--mute);margin:auto;text-align:center;max-width:30ch}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.bar .btn{padding:7px 12px;font-size:13px}
+.list{display:grid;gap:12px}.item{display:flex;gap:14px;align-items:flex-start}.item .m{flex:1;min-width:0}.item p{margin:4px 0 0;color:var(--mute);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-weight:600;z-index:50}
+.mt{display:none}
+@media(max-width:900px){.hero,.gwrap{grid-template-columns:1fr}.grid,.steps,.qc{grid-template-columns:1fr 1fr}nav .links{display:none}
+.app{grid-template-columns:1fr}aside{position:fixed;z-index:30;width:240px;transform:translateX(-100%);transition:.25s}aside.open{transform:none}.mt{display:block}.top input{display:none}}
+@media(max-width:560px){.grid,.steps,.qc,.opts{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+
+<div id="land">
+<nav id="nav"><a href="#" class="logo"><span class="mark"></span>ContentFlow AI</a>
+<div class="links"><a href="#features">Features</a><a href="#features">Templates</a><a href="#features">Prompt Library</a><a href="#how">How It Works</a></div><span class="sp"></span>
+<button class="btn" data-go="login">Log In</button><button class="btn p" data-go="signup">Get Started</button></nav>
+<div class="hero"><div>
+<h1>Turn your ideas into content in seconds.</h1>
+<p>Generate blogs, social posts, emails, marketing copy, scripts, code and more from one intelligent workspace.</p>
+<button class="btn p" data-go="signup" style="padding:13px 22px">Start Creating</button> <button class="btn" data-go="signup" style="padding:13px 22px">Explore Prompts</button>
+<div class="tag">From idea to content, effortlessly.</div></div>
+<div class="stage"><div class="chip-f a">Tone: Professional</div><div class="chip-f b">LinkedIn · Short</div>
+<div class="win"><div class="bub">Create a LinkedIn post about AI productivity.</div><div class="out" id="demo"></div></div></div></div>
+<section class="sec" id="features"><h2>One workspace for every kind of writing</h2><div class="grid" id="feat"></div></section>
+<section class="sec" id="how"><h2>How it works</h2><div class="steps">
+<div class="card"><h3>Pick a content type</h3><p>Blog, email, social, code or your own custom brief.</p></div>
+<div class="card"><h3>Describe it</h3><p>Add topic, tone, audience and length, or start from a saved prompt.</p></div>
+<div class="card"><h3>Edit and reuse</h3><p>Refine the draft, copy or download it, and keep it in your library.</p></div></div></section>
+<footer>© 2026 ContentFlow AI</footer></div>
+
+<div id="auth" class="auth hide"><div class="box" id="abox"></div></div>
+
+<div id="app" class="app hide">
+<aside id="side"><div class="logo" style="padding:6px 10px 10px"><span class="mark"></span>ContentFlow AI</div>
+<h6>Workspace</h6><div id="nav2"></div><h6>Account</h6><button class="ni" data-v="settings">⚙️ Settings</button>
+<button class="ni" onclick="toast('Help center opens here')">❔ Help</button>
+<div class="prof"><div class="av" id="av"></div><div style="min-width:0"><b id="un"></b><br><button class="lnk" id="out" style="font-weight:500;color:var(--mute)">Log out</button></div></div></aside>
+<main><div class="top"><button class="ib mt" id="menu" aria-label="Menu">☰</button><div class="t"><h1 id="hi"></h1><p id="sub">What are you creating today?</p></div>
+<input id="q" placeholder="Search history and prompts" aria-label="Search"><button class="ib" onclick="toast('No new notifications')" aria-label="Notifications">🔔</button><button class="ib" id="theme" aria-label="Toggle theme">🌓</button><div class="av">U</div></div>
+<div id="view"></div></main></div>
+<div id="toast" class="toast hide"></div>
+
+<script>
+const $=s=>document.querySelector(s),E=(h)=>{const d=document.createElement('div');d.innerHTML=h;return d.firstElementChild};
+const S={user:null,prefs:[],hist:[],favs:[],prompts:[],view:'dashboard',type:'Blog',tone:'Professional',len:'Medium',cur:null,topic:'',aud:'',plat:'LinkedIn',extra:''};
+const ld=()=>{try{Object.assign(S,JSON.parse(localStorage.getItem('cf')||'{}'))}catch(e){}};
+const sv=()=>{try{localStorage.setItem('cf',JSON.stringify({user:S.user,prefs:S.prefs,hist:S.hist,favs:S.favs,prompts:S.prompts}))}catch(e){}};
+ld();
+const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.remove('hide');clearTimeout(toast.i);toast.i=setTimeout(()=>t.classList.add('hide'),1800)};
+const FEAT=[['✨','AI Content Generator','Generate high-quality content from simple instructions.'],['📚','Prompt Library','Access reusable prompts for different use cases.'],['🔁','Smart Rewriting','Improve, shorten, expand, simplify, or change the tone of content.'],['🗂️','Content Workspace','Edit and organize generated content.'],['🧩','Templates','Start quickly with ready-made content structures.'],['🕘','Content History','Automatically keep track of previous generations.']];
+$('#feat').innerHTML=FEAT.map(f=>`<div class="card"><div class="ic">${f[0]}</div><h3>${f[1]}</h3><p>${f[2]}</p></div>`).join('');
+addEventListener('scroll',()=>$('#nav').classList.toggle('s',scrollY>10));
+// hero demo
+const DEMO="AI won't replace your best work. It will replace the blank page.\n\nThree habits that saved me 6 hours a week:\n• Draft with AI, edit with judgment\n• Turn every great prompt into a reusable template\n• Batch your ideas on Monday, not every morning\n\nWhat's your favorite AI shortcut?";
+async function demo(){const o=$('#demo');while(1){o.innerHTML='<div class="gen">Generating <span class="dots"><i></i><i></i><i></i></span></div>';await new Promise(r=>setTimeout(r,1800));o.textContent='';for(const c of DEMO){o.textContent+=c;await new Promise(r=>setTimeout(r,18))}await new Promise(r=>setTimeout(r,5000))}}
+demo();
+// views
+function show(w){['land','auth','app'].forEach(x=>$('#'+x).classList.toggle('hide',x!==w));scrollTo(0,0)}
+function authView(m){
+const box=$('#abox');show('auth');
+if(m==='onboard'){box.innerHTML=`<div class="logo"><span class="mark"></span>ContentFlow AI</div><h2>Let's personalize your workspace.</h2><p class="s">What do you mainly create?</p><div class="opts">${['Social Media','Marketing','Business','Education','Coding','Emails','Career','Creative Writing'].map(o=>`<button class="pill" data-o="${o}">${o}</button>`).join('')}</div><div class="err" id="er"></div><button class="btn p" style="width:100%;padding:12px" id="fin">Continue to workspace</button>`;
+box.querySelectorAll('.pill').forEach(b=>b.onclick=()=>b.classList.toggle('on'));
+$('#fin').onclick=()=>{S.prefs=[...box.querySelectorAll('.pill.on')].map(b=>b.dataset.o);if(!S.prefs.length){$('#er').textContent='Pick at least one option.';return}sv();enter()};return}
+const t={login:['Welcome back','Log in to your workspace.'],signup:['Create your account','Start creating in under a minute.'],forgot:['Reset password','We will email you a reset link.']}[m];
+box.innerHTML=`<a href="#" class="logo" data-go="land"><span class="mark"></span>ContentFlow AI</a><h2>${t[0]}</h2><p class="s">${t[1]}</p>
+${m==='signup'?'<label>Name</label><input id="n" autocomplete="name">':''}<label>Email</label><input id="e" type="email" autocomplete="email">
+${m!=='forgot'?'<label>Password</label><input id="p" type="password" autocomplete="current-password">':''}<div class="err" id="er"></div>
+<button class="btn p" style="width:100%;padding:12px;margin-top:6px" id="sub2">${{login:'Log in',signup:'Create account',forgot:'Send reset link'}[m]}</button>
+<p style="text-align:center;margin:18px 0 0;color:var(--mute)">${m==='login'?'<button class="lnk" data-go="forgot">Forgot password?</button> · <button class="lnk" data-go="signup">Sign up</button>':'<button class="lnk" data-go="login">Back to log in</button>'}</p>`;
+$('#sub2').onclick=()=>{const e=$('#e').value.trim(),p=$('#p')?.value,n=$('#n')?.value.trim(),er=$('#er');
+if(!/^\S+@\S+\.\S+$/.test(e))return er.textContent='Enter a valid email address.';
+if(m==='forgot'){er.style.color='var(--ac)';return er.textContent='Reset link sent. Check your inbox.'}
+if(!p||p.length<6)return er.textContent='Password must be at least 6 characters.';
+if(m==='signup'&&!n)return er.textContent='Enter your name.';
+S.user={name:n||S.user?.name||e.split('@')[0],email:e};sv();m==='signup'?authView('onboard'):enter()}}
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(!g)return;e.preventDefault();g.dataset.go==='land'?show('land'):authView(g.dataset.go)});
+const NAV=[['dashboard','🏠','Dashboard'],['generate','✨','Generate'],['library','📚','Prompt Library'],['templates','🧩','Templates'],['history','🕘','History'],['favorites','⭐','Favorites']];
+function enter(){show('app');const n=S.user?.name||'there';$('#un').textContent=n;$('#av').textContent=n[0].toUpperCase();
+const h=new Date().getHours();$('#hi').textContent=`Good ${h<12?'morning':h<18?'afternoon':'evening'}, ${n} 👋`;
+$('#nav2').innerHTML=NAV.map(x=>`<button class="ni" data-v="${x[0]}">${x[1]} ${x[2]}</button>`).join('');go('dashboard')}
+$('#out').onclick=()=>{S.user=null;sv();show('land')};
+$('#menu').onclick=()=>$('#side').classList.toggle('open');
+$('#theme').onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).getPropertyValue('--bg').trim()==='#14161b';r.dataset.theme=d?'light':'dark'};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-v]');if(b){go(b.dataset.v)}});
+$('#q').oninput=e=>{if(e.target.value){S.query=e.target.value.toLowerCase();go('history')}};
+const TYPES=['Blog','Social Media','Email','Marketing','Script','Code','Product Description','Custom'],TONES=['Professional','Friendly','Casual','Persuasive','Educational','Funny','Inspirational','Creative'],PLAT=['Instagram','TikTok','LinkedIn','YouTube','Facebook','Website'];
+const QC=[['✍️','Write','Blog posts, articles, essays and more.','Blog'],['📱','Social','Instagram, TikTok, LinkedIn and Facebook content.','Social Media'],['📧','Email','Professional, marketing and follow-up emails.','Email'],['📣','Marketing','Ads, product descriptions and campaigns.','Marketing'],['💻','Code','Generate and explain code.','Code'],['✨','Custom','Create anything using your own instructions.','Custom']];
+const PROMPTS=[['Social Media','Write a LinkedIn post about a lesson I learned this year.'],['Email','Draft a polite follow-up email after a job interview.'],['Marketing','Write a product description for a reusable water bottle.'],['Blog','Outline a blog post on remote work habits.'],['Script','Write a 30-second TikTok script explaining AI to Gen Z.'],['Code','Write a JavaScript function that debounces another function.'],['Email','Write a cold outreach email to a potential client.'],['Marketing','Create three ad headlines for a budgeting app.']];
+const TPL=[['Blog','Blog post outline','Intro, three key points, conclusion and call to action.'],['Email','Follow-up email','Greeting, context, clear ask, friendly close.'],['Social Media','Launch announcement','Hook, what is new, why it matters, link.'],['Script','Short video script','Hook, story beat, takeaway, call to action.']];
+function go(v){S.view=v;$('#side').classList.remove('open');document.querySelectorAll('.ni[data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+$('#sub').textContent={dashboard:'What are you creating today?',generate:'Configure it, then generate.',library:'Reusable prompts for every use case.',templates:'Ready-made content structures.',history:'Everything you generated.',favorites:'Content and prompts you starred.',settings:'Manage your workspace.'}[v];
+const V=$('#view');V.innerHTML='';
+if(v==='dashboard'){V.innerHTML=`<h2 style="margin:6px 0 14px;font-size:22px">What do you want to create?</h2><div class="qc">${QC.map(q=>`<button class="card" data-t="${q[3]}"><span class="e">${q[0]}</span><b>${q[1]}</b><span>${q[2]}</span></button>`).join('')}</div><h2 style="font-size:20px;margin-bottom:12px">Recent</h2><div class="list" id="rc"></div>`;
+V.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{S.type=b.dataset.t;S.cur=null;S.topic='';go('generate')});list($('#rc'),S.hist.slice(0,3),'Nothing yet. Pick a card above to create your first piece.')}
+else if(v==='generate')gen();
+else if(v==='library'){V.innerHTML=`<div class="list">${PROMPTS.concat(S.prompts).map((p,i)=>`<div class="card item"><div class="m"><b>${p[0]}</b><p>${p[1]}</p></div><button class="btn" data-u="${i}">Use</button></div>`).join('')}</div>
+<div class="panel" style="margin-top:18px"><h3>Save your own prompt</h3><label>Prompt</label><textarea id="np" style="min-height:70px"></textarea><button class="btn p" id="sp" style="margin-top:12px">Save prompt</button></div>`;
+const all=PROMPTS.concat(S.prompts);V.querySelectorAll('[data-u]').forEach(b=>b.onclick=()=>{const p=all[b.dataset.u];S.type=p[0];S.topic=p[1];S.cur=null;go('generate')});
+$('#sp').onclick=()=>{const t=$('#np').value.trim();if(!t)return toast('Write a prompt first.');S.prompts.push(['Custom',t]);sv();toast('Prompt saved');go('library')}}
+else if(v==='templates'){V.innerHTML=`<div class="grid">${TPL.map((t,i)=>`<button class="card" data-i="${i}" style="text-align:left;font:inherit"><div class="ic">🧩</div><h3>${t[1]}</h3><p>${t[2]}</p></button>`).join('')}</div>`;
+V.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{const t=TPL[b.dataset.i];S.type=t[0];S.topic=t[1]+': '+t[2];S.cur=null;go('generate')})}
+else if(v==='history'){const q=S.query||'';S.query='';$('#q').value=q;V.innerHTML='<div class="list" id="hl"></div>';list($('#hl'),S.hist.filter(h=>!q||(h.topic+h.text).toLowerCase().includes(q)),'No results. Generate something and it will appear here.')}
+else if(v==='favorites'){V.innerHTML='<div class="list" id="hl"></div>';list($('#hl'),S.hist.filter(h=>S.favs.includes(h.id)),'No favorites yet. Star a generation to keep it here.')}
+else if(v==='settings'){V.innerHTML=`<div class="panel" style="max-width:520px"><h3>Profile</h3><p style="color:var(--mute)">${S.user.name} · ${S.user.email}</p><h3 style="margin-top:20px">Your focus</h3><p style="color:var(--mute)">${S.prefs.join(', ')||'Not set'}</p><button class="btn" id="cl" style="margin-top:16px">Clear history</button></div>`;$('#cl').onclick=()=>{S.hist=[];S.favs=[];sv();toast('History cleared')}}}
+function list(el,a,empty){el.innerHTML=a.length?a.map(h=>`<div class="card item"><div class="m"><b>${h.type} · ${h.tone}</b><p>${h.topic}</p></div><button class="btn" data-o="${h.id}">Open</button><button class="btn" data-f="${h.id}">${S.favs.includes(h.id)?'★':'☆'}</button></div>`).join(''):`<div class="empty" style="padding:30px">${empty}</div>`;
+el.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{S.cur=S.hist.find(h=>h.id==b.dataset.o);S.type=S.cur.type;S.topic=S.cur.topic;go('generate')});
+el.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{fav(+b.dataset.f);go(S.view)})}
+function fav(id){const i=S.favs.indexOf(id);i<0?S.favs.push(id):S.favs.splice(i,1);sv()}
+function gen(){const needP=['Social Media','Script','Marketing'].includes(S.type);
+$('#view').innerHTML=`<div class="gwrap"><div class="panel"><h2 style="font-size:22px;margin-bottom:6px">Create something new</h2>
+<label>Content type</label><select id="ty">${TYPES.map(t=>`<option ${t===S.type?'selected':''}>${t}</option>`).join('')}</select>
+<label>What do you want to create?</label><textarea id="tp" placeholder="Example: Create a TikTok script explaining why Gen Z should understand AI.">${S.topic}</textarea>
+<label>Tone</label><div class="chips" id="tn">${TONES.map(t=>`<button class="${t===S.tone?'on':''}">${t}</button>`).join('')}</div>
+<label>Who is this for?</label><input id="au" value="${S.aud}" placeholder="Example: first-time founders">
+<div id="pl" class="${needP?'':'hide'}"><label>Platform</label><select id="pf">${PLAT.map(t=>`<option ${t===S.plat?'selected':''}>${t}</option>`).join('')}</select></div>
+<label>Length</label><div class="seg" id="ln">${['Short','Medium','Long'].map(t=>`<button class="${t===S.len?'on':''}">${t}</button>`).join('')}</div>
+<details><summary>Additional instructions</summary><textarea id="ex" style="margin-top:8px;min-height:70px" placeholder="Add any specific requirements...">${S.extra}</textarea></details>
+<button class="go" id="gb">✨ Generate Content</button><div class="err" id="ge"></div></div>
+<div class="panel res" id="rs"></div></div>`;
+const rd=()=>{S.topic=$('#tp').value;S.aud=$('#au').value;S.extra=$('#ex').value;S.plat=$('#pf').value};
+$('#ty').onchange=e=>{rd();S.type=e.target.value;gen()};
+[['#tn','tone'],['#ln','len']].forEach(([s,k])=>$(s).onclick=e=>{const b=e.target.closest('button');if(!b)return;S[k]=b.textContent;$(s).querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b))});
+$('#gb').onclick=()=>run(rd);render()}
+function render(){const r=$('#rs');if(!S.cur){r.innerHTML='<div class="empty"><div style="font-size:34px">✨</div><h3>Your content appears here</h3><p>Fill in the form and choose Generate Content.</p></div>';return}
+const c=S.cur;r.innerHTML=`<div class="body" id="bd" contenteditable="true" aria-label="Generated content, editable">${c.text.replace(/</g,'&lt;')}</div>
+<div class="bar"><button class="btn" id="cp">Copy</button><button class="btn" id="dl">Download</button><button class="btn" id="fv">${S.favs.includes(c.id)?'★ Favorited':'☆ Favorite'}</button><button class="btn" id="rg">Regenerate</button><button class="btn" data-rw="shorter">Shorter</button><button class="btn" data-rw="longer">Expand</button><button class="btn" data-rw="simpler">Simplify</button></div>`;
+const bd=$('#bd');bd.oninput=()=>{c.text=bd.innerText;sv()};
+$('#cp').onclick=()=>{navigator.clipboard?.writeText(bd.innerText).then(()=>toast('Copied'),()=>toast('Copy failed. Select the text and copy manually.'))};
+$('#dl').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([bd.innerText],{type:'text/plain'}));a.download='contentflow.txt';a.click();toast('Downloaded')};
+$('#fv').onclick=()=>{fav(c.id);render()};$('#rg').onclick=()=>run(()=>{});
+r.querySelectorAll('[data-rw]').forEach(b=>b.onclick=async()=>{const k=b.dataset.rw,old=bd.innerText;
+const ins={shorter:'Rewrite this much shorter, keeping the key points.',longer:'Expand this with more depth, examples and detail.',simpler:'Rewrite this in simpler, plainer language.'}[k];
+if(!SM)return toast('Live AI is not available in this view.');
+bd.setAttribute('aria-busy','true');bd.style.opacity='.6';
+try{const t=await SM(ins+' Return only the rewritten content, no preamble.\n\n'+old,{cache:false,onText:x=>{bd.innerText=x.text}});c.text=t.text;sv();toast('Updated')}catch(e){c.text=old;toast(errMsg(e))}render()})}
+function draft(){const T=S.topic.trim(),a=S.aud.trim()||'your readers',n={Short:1,Medium:2,Long:3}[S.len],tone=S.tone.toLowerCase();
+const pts=['Start with the problem your audience already feels.','Show one concrete example instead of a general claim.','Give a single next step they can take today.','Close by repeating the benefit in one sentence.'].slice(0,n+1);
+const hd={Blog:`# ${T}\n\nA ${tone} guide for ${a}.\n\n${pts.map((p,i)=>`## ${i+1}. ${p}\nExplain it in plain language and tie it back to "${T}".`).join('\n\n')}\n\nConclusion: put the main idea into practice this week.`,
+'Social Media':`Hook: Nobody tells you this about ${T.toLowerCase().slice(0,60)}.\n\n${pts.map(p=>'• '+p).join('\n')}\n\nWritten for ${a} on ${S.plat}. Ask a question to start the conversation.\n\n#ContentFlow #Creators`,
+Email:`Subject: Quick note about ${T.slice(0,50)}\n\nHi there,\n\nI'm writing to ${tone==='persuasive'?'share why this matters now':'follow up'}: ${T}\n\n${pts.slice(0,n).map(p=>p).join(' ')}\n\nWould a short call this week work?\n\nBest,\n${S.user?.name||'Me'}`,
+Marketing:`Headline: ${T.slice(0,60)}\n\nWhy ${a} will care:\n${pts.map(p=>'✓ '+p).join('\n')}\n\nCall to action: Try it free today.`,
+Script:`[HOOK, 0-3s] "${T.slice(0,70)}"\n[BEAT 1] ${pts[0]}\n[BEAT 2] ${pts[1]}\n[CTA] Follow for more, made for ${a} on ${S.plat}.`,
+Code:`// ${T}\nfunction debounce(fn, wait = 300) {\n  let timer;\n  return (...args) => {\n    clearTimeout(timer);\n    timer = setTimeout(() => fn(...args), wait);\n  };\n}\n\n// Usage: const onType = debounce(search, 250);\n// Explanation: calls fn only after the user pauses for "wait" ms.`,
+'Product Description':`${T}\n\nBuilt for ${a}. ${pts.slice(0,n).join(' ')}\n\nKey benefits:\n${pts.map(p=>'• '+p).join('\n')}`,
+Custom:`${T}\n\nTone: ${S.tone}. Audience: ${a}.\n\n${pts.join('\n\n')}${S.extra?'\n\nRequirement applied: '+S.extra:''}`};return hd[S.type]}
+const SM=async(input,opts={})=>{let r;try{r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:input})})}catch(e){throw{code:'error',message:'Could not reach the server.'}}
+if(r.status===429)throw{code:'rate_limited'};if(r.status===404)throw{code:'error',message:'API route /api/generate not found. Check that the api folder is at the repo root and redeploy.'};
+if(!r.ok){let m='';try{m=(await r.json()).error}catch(e){}throw{code:'error',message:m||('Server error '+r.status)}}
+const d=await r.json();opts.onText&&opts.onText({text:d.text});return{text:d.text}};
+if(r.status===429)throw{code:'rate_limited'};if(!r.ok)throw{code:'error'};const d=await r.json();opts.onText&&opts.onText({text:d.text});return{text:d.text}};
+const errMsg=e=>e&&e.code==='not_granted'?'Permission to use AI was declined.':e&&e.code==='rate_limited'?'Too many requests. Wait a moment and try again.':e&&e.code==='cancelled'?'Cancelled.':(e&&e.message)||'Generation failed. Try again.';
+function buildPrompt(){const L={Short:'about 80-150 words',Medium:'about 200-350 words',Long:'about 500-800 words'}[S.len];
+return `You are ContentFlow AI, an expert writer, marketer and software engineer. The person wants you to actually deliver the finished result for their request, not a template, outline of instructions or placeholders. If they ask a question or describe a problem, give the real answer or working solution.
+Content type: ${S.type}
+Request: ${S.topic}
+Tone: ${S.tone}
+Audience: ${S.aud||'general audience'}
+${['Social Media','Script','Marketing'].includes(S.type)?'Platform: '+S.plat+'\n':''}Length: ${L} (for code, as long as a correct, complete solution needs, plus a short explanation)
+${S.extra?'Extra requirements: '+S.extra+'\n':''}Output only the finished content, ready to use. For code, use a fenced code block followed by a brief explanation. Use plain text with light markdown; no preamble like "Sure" or "Here is".`}
+let AC=null;
+async function run(rd){rd();const e=$('#ge');if(S.topic.trim().length<5){e.textContent='Describe what you want to create (at least 5 characters).';$('#tp').focus();return}
+e.textContent='';const b=$('#gb');b.disabled=true;b.classList.add('busy');b.textContent='Generating...';
+const r=$('#rs');r.innerHTML='<div class="empty"><div class="gen" style="justify-content:center">Generating <span class="dots"><i></i><i></i><i></i></span></div></div>';
+const done=()=>{b.disabled=false;b.classList.remove('busy');b.textContent='\u2728 Generate Content'};
+let text='';
+try{
+if(SM){const res=await SM(buildPrompt(),{cache:false,modelTier:'complex',onText:x=>{text=x.text;r.innerHTML='<div class="body"></div>';r.firstChild.textContent=x.text}});text=res.text}
+else{await new Promise(z=>setTimeout(z,900));text=draft();toast('Live AI is unavailable here, so this is a basic template draft.')}
+}catch(err){done();if(text&&err.text!==undefined)text=err.text;else{e.textContent=errMsg(err);render();return}}
+done();S.cur={id:Date.now(),type:S.type,tone:S.tone,topic:S.topic,text:text.trim()};S.hist.unshift(S.cur);sv();render()}
+S.user?(S.prefs.length?enter():authView('onboard')):show('land');
+</script></body></html>
